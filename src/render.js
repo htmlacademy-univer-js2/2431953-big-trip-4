@@ -1,17 +1,19 @@
-export const RenderPosition = {
+const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
   AFTEREND: 'afterend',
 };
 
-export const createElement = (template) => {
+function createElement(template) {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
   return newElement.firstElementChild;
-};
+}
 
-export const render = (component, container, place = RenderPosition.BEFOREEND) => {
+function render(component, container, place = RenderPosition.BEFOREEND) {
   container.insertAdjacentElement(place, component.getElement());
-};
+}
+
+export {RenderPosition, createElement, render};
