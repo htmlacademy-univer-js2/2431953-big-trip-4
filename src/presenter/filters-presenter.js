@@ -7,6 +7,7 @@ import { filterByType } from '../utils';
 
 const filtersContainer = document.querySelector('.trip-controls__filters');
 
+
 export default class FiltersPresenter {
   #pointsModel = null;
   #filters = [];

@@ -11,4 +11,3 @@ export default class PointsModel {
     return this.#points;
   }
 }
-
