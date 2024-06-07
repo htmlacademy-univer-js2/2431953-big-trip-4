@@ -1,5 +1,4 @@
-import { SORTING_COLUMNS } from '../const.js';
-import RadiosListView from './radios-list-view.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createSortingItemTemplate(column) {
   const { type, label, active, defaultSelected } = column;
@@ -10,18 +9,33 @@ function createSortingItemTemplate(column) {
     </div>`;
 }
 
-function createSortingTemplate() {
+function createSortingTemplate(items) {
   return `<form class="trip-events__trip-sort trip-sort" action="#" method="get">
-    ${SORTING_COLUMNS.map(createSortingItemTemplate).join('')}
+    ${items.map(createSortingItemTemplate).join('')}
   </form>`;
 }
 
-export default class SortingView extends RadiosListView {
-  constructor() {
-    super({ items: SORTING_COLUMNS });
+export default class SortingView extends AbstractView {
+  #items = [];
+  #onSortChange = null;
+
+  constructor({
+    items,
+    onSortChange
+  }) {
+    super();
+
+    this.#items = items;
+    this.#onSortChange = onSortChange;
+    this.element.addEventListener('change', this.#sortingChangeHandler);
   }
 
   get template() {
-    return createSortingTemplate();
+    return createSortingTemplate(this.#items);
   }
+
+  #sortingChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.#onSortChange(evt.target.value);
+  };
 }

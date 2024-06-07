@@ -1,4 +1,4 @@
-import RadiosListView from './radios-list-view.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createFilterItemTemplate(filter) {
   const { type, label, defaultSelected, disabled } = filter;
@@ -20,8 +20,22 @@ function createFiltersTemplate(filters) {
   );
 }
 
-export default class FiltersView extends RadiosListView {
+export default class FiltersView extends AbstractView {
+  #items = [];
+  #onFilterChange = null;
+
+  constructor({
+    items,
+    onFilterChange
+  }) {
+    super();
+
+    this.#items = items;
+    this.#onFilterChange = onFilterChange;
+    this.element.addEventListener('change', this.#onFilterChange);
+  }
+
   get template() {
-    return createFiltersTemplate(this._items);
+    return createFiltersTemplate(this.#items);
   }
 }
