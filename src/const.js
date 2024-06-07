@@ -32,6 +32,61 @@ const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eius, dolorem.',
   'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odit ad eaque cupiditate praesentium maxime.',
 ];
+
+const FilterType = {
+  ANY: 'any',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
+
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer',
+};
+
+const FilterSettings = {
+  [FilterType.ANY]: {
+    label: 'Everything',
+    defaultSelected: true,
+  },
+  [FilterType.FUTURE]: { label: 'Future' },
+  [FilterType.PRESENT]: { label: 'Present' },
+  [FilterType.PAST]: { label: 'Past' },
+};
+
+const SORTING_COLUMNS = [
+  {
+    type: SortType.DAY,
+    label: 'Day',
+    active: true,
+    defaultSelected: true,
+  },
+  {
+    type: SortType.EVENT,
+    label: 'Event',
+    active: false,
+  },
+  {
+    type: SortType.TIME,
+    label: 'Time',
+    active: true,
+  },
+  {
+    type: SortType.PRICE,
+    label: 'Price',
+    active: true,
+  },
+  {
+    type: SortType.OFFER,
+    label: 'Offer',
+    active: false,
+  },
+];
+
 const DateFormat = {
   TIME: 'HH:mm',
   SHORT: 'MMM DD',
@@ -65,6 +120,10 @@ export {
   MAX_IMAGES_COUNT,
   CITIES,
   DESCRIPTIONS,
+  SORTING_COLUMNS,
+  FilterType,
+  FilterSettings,
+  SortType,
   DateFormat,
   DurationFormat,
   Price,

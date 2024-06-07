@@ -58,7 +58,7 @@ export default class MockService {
 
   #generatePoints() {
     return Array.from({
-      length: MocksMaxCount.POINTS
+      length: getRandomPositiveNumber(0, MocksMaxCount.POINTS)
     }, () => {
       const type = getRandomArrayElement(EVENT_TYPES);
       const destination = getRandomArrayElement(this.#destinations);
