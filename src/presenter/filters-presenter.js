@@ -28,4 +28,5 @@ export default class FiltersPresenter {
       items: this.#filters
     }), filtersContainer);
   }
+
 }
