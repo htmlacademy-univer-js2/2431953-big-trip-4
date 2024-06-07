@@ -1,4 +1,7 @@
-import { remove, render } from '../framework/render.js';
+import {
+  remove,
+  render,
+} from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsListEmptyView from '../view/events-list-empty-view.js';
 import { SORTING_COLUMNS, SortType } from '../const.js';
@@ -17,14 +20,17 @@ export default class RoutePresenter {
   #sortingComponent = null;
   #pointsPresenters = new Map();
 
-  constructor({ container, pointsModel, offersModel, destinationsModel }) {
+  constructor({
+    container,
+    pointsModel,
+    offersModel,
+    destinationsModel
+  }) {
     this.#container = container;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
-    this.#points = sortByType[this.#currentSortType]([
-      ...this.#pointsModel.get(),
-    ]);
+    this.#points = sortByType[this.#currentSortType]([...this.#pointsModel.get()]);
   }
 
   init() {
@@ -75,11 +81,16 @@ export default class RoutePresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onPointChange: this.#pointChangeHandler,
+      onEditorOpen: this.#pointEditHandler,
     });
 
     pointPresenter.init(point);
     this.#pointsPresenters.set(point.id, pointPresenter);
   }
+
+  #pointEditHandler = () => {
+    this.#pointsPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   #pointChangeHandler = (updatedPoint) => {
     this.#points = updateItem(this.#points, updatedPoint);
