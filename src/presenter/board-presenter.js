@@ -8,7 +8,7 @@ import { filter, sortPoints } from '../utils.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../view/loading-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
-import ErrorMessageView from '../view/error-meassage-view.js';
+import ErrorMessageView from '../view/error-message-view.js';
 
 export default class BoardPresenter {
   #pointModel = null;
@@ -40,13 +40,13 @@ export default class BoardPresenter {
     this.#destinationModel.addObserver(this.#modelDataChangeHandler);
   }
 
-  init() {
-    this.#renderBoard();
-  }
-
   get points() {
     const filteredPoints = filter[this.#filterModel.filterType]([...this.#pointModel.points]);
     return sortPoints[this.#currentSortType](filteredPoints);
+  }
+
+  init() {
+    this.#renderBoard();
   }
 
   createPoint(destroyCallback) {

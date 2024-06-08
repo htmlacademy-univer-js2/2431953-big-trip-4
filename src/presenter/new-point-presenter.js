@@ -69,8 +69,8 @@ export default class NewPointPresenter {
   #generateDefaultTripEvent() {
     return {
       basePrice: 0,
-      dateFrom: dayjs().toString(),
-      dateTo: dayjs().toString(),
+      dateFrom: dayjs().toDate(),
+      dateTo: dayjs().add(1, 'm').toDate(),
       destination: this.#destinations[0].id,
       isFavorite: false,
       offers: [],
