@@ -1,5 +1,5 @@
-import AbstractView from "../framework/view/abstract-view.js";
-import {humanizeEventTime } from "../utils.js";
+import AbstractView from '../framework/view/abstract-view.js';
+import {humanizeEventTime } from '../utils.js';
 
 const TWO_TITLE_EVENTS_COUNT = 2;
 const THREE_TITLE_EVENTS_COUNT = 3;
@@ -23,7 +23,7 @@ const createTripInfoTemplate = (points, tripPrice, destinations) => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${getTripTitle(points, destinations)}</h1>
-      <p class="trip-info__dates">${humanizeEventTime(points[0].dateFrom, "MMM D")}&nbsp;&mdash;&nbsp;${humanizeEventTime(points[points.length - 1].dateTo, "MMM D")}</p>
+      <p class="trip-info__dates">${humanizeEventTime(points[0].dateFrom, 'MMM D')}&nbsp;&mdash;&nbsp;${humanizeEventTime(points[points.length - 1].dateTo, 'MMM D')}</p>
     </div>
     <p class="trip-info__cost">
       Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripPrice}</span>

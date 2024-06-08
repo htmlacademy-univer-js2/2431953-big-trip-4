@@ -29,10 +29,10 @@ export default class PointApiService extends ApiService {
   #adaptToServer(tripEvent) {
     const adaptedTripEvent = {
       ...tripEvent,
-      base_Price: tripEvent.basePrice,
-      date_From: tripEvent.dateFrom,
-      date_To: tripEvent.dateTo,
-      is_Favorite: tripEvent.isFavorite,
+      basePrice: tripEvent.basePrice,
+      dateFrom: tripEvent.dateFrom,
+      dateTo: tripEvent.dateTo,
+      isFavorite: tripEvent.isFavorite,
     };
 
     delete adaptedTripEvent.basePrice;
