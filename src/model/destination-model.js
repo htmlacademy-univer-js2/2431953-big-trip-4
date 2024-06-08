@@ -1,8 +1,8 @@
 import Observable from '../framework/observable.js';
 
-export default class OfferModel extends Observable{
+export default class DestinationModel extends Observable {
   #pointApiService = null;
-  #offersByType = [];
+  #destinations = [];
 
   constructor(pointApiService) {
     super();
@@ -11,13 +11,13 @@ export default class OfferModel extends Observable{
 
   async init() {
     try {
-      this.#offersByType = await this.#pointApiService.offersByType;
+      this.#destinations = await this.#pointApiService.destinations;
     } catch(err) {
-      this.#offersByType = [];
+      this.#destinations = [];
     }
   }
 
-  get offersByType() {
-    return this.#offersByType;
+  get destinations() {
+    return this.#destinations;
   }
 }

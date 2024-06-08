@@ -23,26 +23,19 @@ const transformTimeDifference = (difference) => {
 
 const getTimeDifference = (dateFrom, dateTo) => transformTimeDifference(dayjs(dateTo).diff(dayjs(dateFrom), 'minute'));
 
-const isPast = (date, unit, dateFrom = dayjs()) => dayjs(dateFrom).isAfter(dayjs(date), unit);
+const isPast = (date, dateFrom = dayjs()) => dayjs(dateFrom).isAfter(dayjs(date));
 
-const isFuture = (date, unit) => dayjs().isBefore(dayjs(date), unit) || dayjs().isSame(dayjs(date), unit);
+const isFuture = (date) => dayjs().isBefore(dayjs(date)) || dayjs().isSame(dayjs(date));
 
 const areDatesSame = (oldDate, newDate) => dayjs(oldDate).isSame(dayjs(newDate));
-
-//Random
-function getRandomValue (minimum = 1, maximum = 1000) { //нужно всплытие
-  return Math.floor(Math.random() * (maximum - minimum) + minimum);
-}
-
-const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
 
 //Filter
 const filter = {
   [FilterType.EVERYTHING] : (points) => points,
-  [FilterType.FUTURE] : (points) => points.filter((point) => isFuture(point.dateFrom, 'D') || isFuture(point.dateTo, 'D')),
-  [FilterType.PAST] : (points) => points.filter((point) => isPast(point.dateTo, 'D') || isPast(point.dateFrom, 'D')),
-  [FilterType.PRESENT] : (points) => points.filter((point) => isPast(point.dateTo, 'D') && isFuture(point.dateFrom, 'D')),
+  [FilterType.FUTURE] : (points) => points.filter((point) => isFuture(point.dateFrom)),
+  [FilterType.PRESENT] : (points) => points.filter((point) => isPast(point.dateFrom) && isFuture(point.dateTo)),
+  [FilterType.PAST] : (points) => points.filter((point) => isPast(point.dateTo)),
 };
 
 
@@ -57,36 +50,22 @@ const sortTimePoint = (pointA, pointB) => {
   return timePointB - timePointA;
 };
 
-const sortTripEvents = {
+const sortPoints = {
   [SortType.DAY]: (points) => points.sort(sortDayPoint),
   [SortType.TIME]: (points) => points.sort(sortTimePoint),
   [SortType.PRICE]: (points) => points.sort(sortPricePoint),
 };
 
+const MessagesByFilterType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.PAST]: 'There are no past events now',
+};
 
 //Other
 const isEscapeButton = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
 
-const capitalizeString = (string) => {
-  const capFirstString = string[0].toUpperCase();
-  const restOfString = string.slice(1);
-  return capFirstString + restOfString;
-};
-
-
-let dates = dayjs().subtract(getRandomValue(0, 31), 'day').toDate();
-const getTempDate = ({flag}) => {
-  const minsGap = getRandomValue(0, 60 - 1);
-  const hoursGap = getRandomValue(0, 24 - 1);
-  if (flag) {
-    dates = dayjs(dates).add(minsGap, 'minute').add(hoursGap, 'hour').toDate();
-  }
-  return dates;
-};
-
-
-export {getRandomArrayElement, getRandomValue, isEscapeButton, updateItem,
-  sortDayPoint, sortPricePoint, sortTimePoint, capitalizeString,
-  getTempDate, areDatesSame, filter, sortTripEvents, humanizeEventTime, isPast, getTimeDifference, FilterType };
+export { isEscapeButton, updateItem, areDatesSame, filter, sortPoints, humanizeEventTime, isPast, isFuture, getTimeDifference, FilterType, MessagesByFilterType };

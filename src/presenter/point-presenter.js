@@ -1,125 +1,150 @@
-import FormEditView from '../view/form-edit-view.js';
-import TripPointView from '../view/trip-point-view.js';
-import { render, replace, remove, } from '../framework/render.js';
+import PointFormEditView from '../view/point-form-edit-view.js';
+import PointView from '../view/point-view.js';
+import { render, replace, remove } from '../framework/render.js';
 import { Mode, UpdateType, UserAction } from '../const.js';
 import { isEscapeButton, areDatesSame } from '../utils.js';
 
 export default class PointPresenter {
-  #changeData = null;
-  #changeMode = null;
-  #container = null;
+  #point = null;
+  #pointMode = Mode.DEFAULT;
+  #pointsListContainer = null;
+  #pointsComponent = null;
+  #editFormComponent = null;
   #offersByType = null;
   #destinations = null;
-  #offers = null;
-  #point = null;
-  #previewPointComponent = null;
-  #editingPointComponent = null;
-  #mode = Mode.DEFAULT;
-  #tripEventComponent = null;
-  #editFormComponent = null;
+  #changeData = null;
+  #changePointMode = null;
 
-  constructor (container, offersByType, onDataChange, onModeChange) {
-    this.#container = container;
+  constructor(
+    pointsListContainer,
+    offersByType,
+    destinations,
+    changeData,
+    changePointMode
+  ) {
+    this.#pointsListContainer = pointsListContainer;
     this.#offersByType = offersByType;
-    this.#changeData = onDataChange;
-    this.#changeMode = onModeChange;
-    this.#mode = Mode.DEFAULT;
+    this.#destinations = destinations;
+    this.#changeData = changeData;
+    this.#changePointMode = changePointMode;
   }
 
   init(point) {
     this.#point = point;
-    this.#renderTripEventComponent();
+    this.#renderPointComponent();
   }
 
-  #renderTripEventComponent() {
-    const prevPreviewPointComponent = this.#tripEventComponent;
-    const prevEditingPointComponent = this.#editFormComponent;
+  resetPointMode() {
+    if (this.#pointMode === Mode.EDITING) {
+      this.#replaceFormToPoint();
+    }
+  }
 
-    this.#previewPointComponent = new TripPointView(this.#point, this.#offersByType);
+  destroy() {
+    remove(this.#pointsComponent);
+    remove(this.#editFormComponent);
+  }
+
+  #renderPointComponent() {
+    const previousEventComponent = this.#pointsComponent;
+    const previousEditFormComponent = this.#editFormComponent;
+    this.#pointsComponent = new PointView(
+      this.#point,
+      this.#offersByType.length
+        ? this.#offersByType.find((offer) => offer.type === this.#point.type)
+          .offers
+        : [],
+      this.#destinations.find((place) => place.id === this.#point.destination)
+    );
     this.#renderEditFormComponent();
-    this.#tripEventComponent.setFormOpenClickHandler(this.#onFormOpenButtonClick);
-    this.#tripEventComponent.setFavoriteButtonHandler(this.#onFavoriteChangeClick);
-
-    if (prevPreviewPointComponent === null || prevEditingPointComponent === null) {
-      render(this.#previewPointComponent, this.#container);
+    this.#pointsComponent.setFormOpenClickHandler(
+      this.#formOpenButtonClickHandler
+    );
+    this.#pointsComponent.setFavoriteButtonHandler(
+      this.#favoriteChangeClickHandler
+    );
+    if (previousEventComponent === null || previousEditFormComponent === null) {
+      render(this.#pointsComponent, this.#pointsListContainer);
       return;
     }
-
-    switch (this.#mode) {
+    switch (this.#pointMode) {
       case Mode.DEFAULT:
-        replace(this.#previewPointComponent, prevPreviewPointComponent);
+        replace(this.#pointsComponent, previousEventComponent);
         break;
       case Mode.EDITING:
-        replace(this.#editingPointComponent, prevEditingPointComponent);
+        replace(this.#pointsComponent, previousEditFormComponent);
+        this.#pointMode = Mode.DEFAULT;
         break;
     }
-
-    remove(prevPreviewPointComponent);
-    remove(prevEditingPointComponent);
+    remove(previousEventComponent);
+    remove(previousEditFormComponent);
   }
-
-  destroy = () => {
-    remove(this.#previewPointComponent);
-    remove(this.#editingPointComponent);
-  };
-
-  resetView = () => {
-    if (this.#mode === Mode.EDITING) {
-      this.#replaceEditingPointToPreviewPoint();
-    }
-  };
-
-  #escKeyDownHandler = (evt) => {
-    if (isEscapeButton(evt)) {
-      evt.preventDefault();
-      this.#editingPointComponent.reset(this.#point);
-      this.#replaceEditingPointToPreviewPoint();
-    }
-  };
 
   #renderEditFormComponent() {
-    this.#editFormComponent = new FormEditView(this.#offersByType, this.#point);
-
-    this.#editFormComponent.setFormSubmitHandler(this.#onFormSubmit);
-    this.#editFormComponent.setFormCloseClickHandler(this.#onFormCloseButtonClick);
-    this.#editFormComponent.setFormDeleteHandler(this.#onDeleteButtonClick);
+    this.#editFormComponent = new PointFormEditView(
+      this.#offersByType,
+      this.#destinations,
+      this.#point
+    );
+    this.#editFormComponent.setFormSubmitHandler(this.#formSubmitHandler);
+    this.#editFormComponent.setFormCloseClickHandler(
+      this.#formCloseButtonClickHandler
+    );
+    this.#editFormComponent.setFormDeleteHandler(
+      this.#deleteButtonClickHandler
+    );
   }
 
-  #replacePreviewPointToEditingPoint = () => {
-    replace(this.#editingPointComponent, this.#previewPointComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#changeMode();
-    this.#mode = Mode.EDITING;
-  };
+  #replacePointToForm() {
+    replace(this.#editFormComponent, this.#pointsComponent);
+    document.addEventListener('keydown', this.#escapeKeyDownHandler);
+    this.#changePointMode();
+    this.#pointMode = Mode.EDITING;
+  }
 
-  #replaceEditingPointToPreviewPoint = () => {
+  #replaceFormToPoint() {
     this.#editFormComponent.reset(this.#point);
-    replace(this.#previewPointComponent, this.#editingPointComponent);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#mode = Mode.DEFAULT;
+    replace(this.#pointsComponent, this.#editFormComponent);
+    document.removeEventListener('keydown', this.#escapeKeyDownHandler);
+    this.#pointMode = Mode.DEFAULT;
+  }
+
+  #formOpenButtonClickHandler = () => {
+    this.#replacePointToForm();
   };
 
-  #onFormOpenButtonClick = () => {
-    this.#replacePreviewPointToEditingPoint();
+  #formCloseButtonClickHandler = () => {
+    this.#replaceFormToPoint();
   };
 
-  #onFormCloseButtonClick = () => {
-    this.#replaceEditingPointToPreviewPoint();
+  #formSubmitHandler = (point) => {
+    const isMinorUpdate =
+      !areDatesSame(this.#point.dateFrom, point.dateFrom) ||
+      !areDatesSame(this.#point.dateTo, point.dateTo) ||
+      this.#point.basePrice !== point.basePrice;
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      point
+    );
   };
 
-  #onFormSubmit = (point) => {
-    const isMinorUpdate = !areDatesSame(this.#point.dateFrom, point.dateFrom)
-      || !areDatesSame(this.#point.dateTo, point.dateTo)
-      || this.#point.basePrice !== point.basePrice;
-    this.#changeData(UserAction.UPDATE_TRIP_EVENT, isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH, point);
-    this.#renderEditFormComponent();
+  #escapeKeyDownHandler = (evt) => {
+    if (isEscapeButton(evt)) {
+      evt.preventDefault();
+      this.#editFormComponent.reset(this.#point);
+      this.#replaceFormToPoint();
+    }
   };
 
-  #onFavoriteChangeClick = () => {
-    this.#changeData(UserAction.UPDATE_TRIP_EVENT, UpdateType.PATCH, {...this.#point, isFavorite: !this.#point.isFavorite});
+  #favoriteChangeClickHandler = () => {
+    this.#changeData(UserAction.UPDATE_POINT, UpdateType.PATCH, {
+      ...this.#point,
+      isFavorite: !this.#point.isFavorite,
+    });
   };
 
-  #onDeleteButtonClick = (tripEvent) => {
-    this.#changeData(UserAction.DELETE_TRIP_EVENT, UpdateType.MINOR, tripEvent);
+  #deleteButtonClickHandler = (point) => {
+    this.#changeData(UserAction.DELETE_POINT, UpdateType.MINOR, point);
   };
 }

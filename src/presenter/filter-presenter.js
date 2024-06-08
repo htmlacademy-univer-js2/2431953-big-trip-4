@@ -1,95 +1,121 @@
 import FiltersView from '../view/filters-view.js';
 import TripInfoView from '../view/trip-info-view.js';
-import { render, replace, remove, RenderPosition } from '../framework/render.js';
-import { sortTripEvents, filter } from '../utils.js';
+import {
+  render,
+  replace,
+  remove,
+  RenderPosition,
+} from '../framework/render.js';
+import { sortPoints, filter } from '../utils.js';
 import { UpdateType, SortType } from '../const.js';
 
 export default class FilterPresenter {
   #filterComponent = null;
-  #filterContainer;
-
+  #filterContainer = null;
   #tripInfoComponent = null;
-  #tripInfoContainer;
+  #tripInfoContainer = null;
+  #filterModel = null;
+  #pointModel = null;
+  #offersModel = null;
+  #destinationModel = null;
 
-  #filterModel;
-  #tripEventModel;
-  #offersModel;
-
-  constructor(filterContainer, tripInfoContainer, filterModel, tripEventModel, offersModel) {
+  constructor(
+    filterContainer,
+    tripInfoContainer,
+    filterModel,
+    pointModel,
+    offersModel,
+    destinationModel
+  ) {
     this.#filterContainer = filterContainer;
     this.#tripInfoContainer = tripInfoContainer;
-
     this.#filterModel = filterModel;
-    this.#tripEventModel = tripEventModel;
+    this.#pointModel = pointModel;
     this.#offersModel = offersModel;
+    this.#destinationModel = destinationModel;
+    this.#filterModel.addObserver(this.#modelDataChangeHandler);
+    this.#pointModel.addObserver(this.#modelDataChangeHandler);
+  }
 
-    this.#filterModel.addObserver(this.#handleModelEvent);
-    this.#tripEventModel.addObserver(this.#handleModelEvent);
+  init() {
+    const previousFilterComponent = this.#filterComponent;
+    this.#filterComponent = new FiltersView(
+      this.filters,
+      this.#filterModel.filterType
+    );
+    this.#filterComponent.setFilterTypeChangeHandler(
+      this.#filterTypeChangeHandler
+    );
+    this.#renderTripInfo();
+    if (!previousFilterComponent) {
+      render(this.#filterComponent, this.#filterContainer);
+      return;
+    }
+    replace(this.#filterComponent, previousFilterComponent);
+    remove(previousFilterComponent);
   }
 
   get filters() {
     return Array.from(Object.entries(filter), ([filterType, filterEvents]) => ({
       type: filterType,
-      count: filterEvents(this.#tripEventModel.tripEvents).length,
+      count: filterEvents(this.#pointModel.points).length,
     }));
   }
 
-  get tripEvents() {
-    return sortTripEvents[SortType.DAY](this.#tripEventModel.tripEvents);
+  get points() {
+    return sortPoints[SortType.DAY](this.#pointModel.points);
   }
 
-  init() {
-    const previousFilterComponent = this.#filterComponent;
+  #renderTripInfo() {
     const previousInfoComponent = this.#tripInfoComponent;
-
-    const tripEvents = this.tripEvents;
-
-    if(tripEvents.length) {
-      this.#tripInfoComponent = new TripInfoView(tripEvents, this.#getOverallTripPrice(tripEvents));
+    const points = this.points;
+    if (
+      points.length &&
+      this.#offersModel.offersByType.length &&
+      this.#destinationModel.destinations.length
+    ) {
+      this.#tripInfoComponent = new TripInfoView(
+        points,
+        this.#getOverallTripPrice(points),
+        this.#destinationModel.destinations
+      );
     }
-
-    this.#filterComponent = new FiltersView(this.filters, this.#filterModel.filterType);
-    this.#filterComponent.setFilterTypeChangeHandler(this.#onFilterTypeChange);
-
-    if(previousFilterComponent === null) {
-      if(previousInfoComponent === null) {
-        render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
-      }
-
-      render(this.#filterComponent, this.#filterContainer);
-      return;
+    if (previousInfoComponent) {
+      replace(this.#tripInfoComponent, previousInfoComponent);
+      remove(previousInfoComponent);
+    } else if (this.#tripInfoComponent) {
+      render(
+        this.#tripInfoComponent,
+        this.#tripInfoContainer,
+        RenderPosition.AFTERBEGIN
+      );
     }
-
-    replace(this.#tripInfoComponent, previousInfoComponent);
-    remove(previousInfoComponent);
-
-    replace(this.#filterComponent, previousFilterComponent);
-    remove(previousFilterComponent);
   }
 
-  #getOverallTripPrice(tripEvents) {
+  #getOverallTripPrice(points) {
     let sum = 0;
-
-    for(const point of tripEvents) {
+    points.forEach((point) => {
       sum += point.basePrice;
-
-      point.offers.forEach((pointOffer) => {
-        sum += this.#offersModel.offers.find((offer) => offer.id === pointOffer).price;
+      const currentOffers = this.#offersModel.offersByType.find(
+        (offer) => offer.type === point.type
+      ).offers;
+      point.offers.forEach((offer) => {
+        sum += currentOffers.find(
+          (currentOffer) => currentOffer.id === offer
+        ).price;
       });
-    }
-
+    });
     return sum;
   }
 
-  #handleModelEvent = () => {
+  #modelDataChangeHandler = () => {
     this.init();
   };
 
-  #onFilterTypeChange = (filterType) => {
-    if(this.#filterModel.filterType === filterType) {
+  #filterTypeChangeHandler = (filterType) => {
+    if (this.#filterModel.filterType === filterType) {
       return;
     }
-
     this.#filterModel.setFilterType(UpdateType.MAJOR, filterType);
   };
 }
