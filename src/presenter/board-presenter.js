@@ -1,12 +1,12 @@
-import TripListView from "../view/trip-list-view.js";
-import SortingView from "../view/sorting-view.js";
-import { remove, render } from "../framework/render.js";
-import EmptyListView from "../view/empty-list-view.js";
-import PointPresenter from "./point-presenter.js";
-import { SortType, UserAction, UpdateType, FilterType } from "../const.js";
-import { filter, sortPoints } from "../utils.js";
-import NewPointPresenter from "./new-point-presenter.js";
-import LoadingView from "../view/loading-view.js";
+import TripListView from '../view/trip-list-view.js';
+import SortingView from '../view/sorting-view.js';
+import { remove, render } from '../framework/render.js';
+import EmptyListView from '../view/empty-list-view.js';
+import PointPresenter from './point-presenter.js';
+import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
+import { filter, sortPoints } from '../utils.js';
+import NewPointPresenter from './new-point-presenter.js';
+import LoadingView from '../view/loading-view.js';
 
 export default class BoardPresenter {
   #pointModel = null;

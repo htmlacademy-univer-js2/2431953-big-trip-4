@@ -1,8 +1,8 @@
-import PointFormEditView from "../view/point-form-edit-view.js";
-import PointView from "../view/point-view.js";
-import { render, replace, remove } from "../framework/render.js";
-import { Mode, UpdateType, UserAction } from "../const.js";
-import { isEscapeButton, areDatesSame } from "../utils.js";
+import PointFormEditView from '../view/point-form-edit-view.js';
+import PointView from '../view/point-view.js';
+import { render, replace, remove } from '../framework/render.js';
+import { Mode, UpdateType, UserAction } from '../const.js';
+import { isEscapeButton, areDatesSame } from '../utils.js';
 
 export default class PointPresenter {
   #point = null;
@@ -52,7 +52,7 @@ export default class PointPresenter {
       this.#point,
       this.#offersByType.length
         ? this.#offersByType.find((offer) => offer.type === this.#point.type)
-            .offers
+          .offers
         : [],
       this.#destinations.find((place) => place.id === this.#point.destination)
     );
@@ -97,7 +97,7 @@ export default class PointPresenter {
 
   #replacePointToForm() {
     replace(this.#editFormComponent, this.#pointsComponent);
-    document.addEventListener("keydown", this.#escapeKeyDownHandler);
+    document.addEventListener('keydown', this.#escapeKeyDownHandler);
     this.#changePointMode();
     this.#pointMode = Mode.EDITING;
   }
@@ -105,7 +105,7 @@ export default class PointPresenter {
   #replaceFormToPoint() {
     this.#editFormComponent.reset(this.#point);
     replace(this.#pointsComponent, this.#editFormComponent);
-    document.removeEventListener("keydown", this.#escapeKeyDownHandler);
+    document.removeEventListener('keydown', this.#escapeKeyDownHandler);
     this.#pointMode = Mode.DEFAULT;
   }
 

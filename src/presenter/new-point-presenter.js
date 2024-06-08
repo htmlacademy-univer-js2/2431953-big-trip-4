@@ -1,8 +1,8 @@
-import PointFormEditView from "../view/point-form-edit-view.js";
-import { render, remove, RenderPosition } from "../framework/render.js";
-import { UpdateType, UserAction, POINT_TYPES } from "../const.js";
-import { isEscapeButton } from "../utils.js";
-import dayjs from "dayjs";
+import PointFormEditView from '../view/point-form-edit-view.js';
+import { render, remove, RenderPosition } from '../framework/render.js';
+import { UpdateType, UserAction, POINT_TYPES } from '../const.js';
+import { isEscapeButton } from '../utils.js';
+import dayjs from 'dayjs';
 
 export default class NewPointPresenter {
   #pointsListContainer = null;
@@ -31,7 +31,7 @@ export default class NewPointPresenter {
     this.#destroyCallback?.();
     remove(this.#addFormComponent);
     this.#addFormComponent = null;
-    document.removeEventListener("keydown", this.#escapeKeyDownHandler);
+    document.removeEventListener('keydown', this.#escapeKeyDownHandler);
   }
 
   #renderAddFormComponent() {
@@ -51,7 +51,7 @@ export default class NewPointPresenter {
       this.#pointsListContainer,
       RenderPosition.AFTERBEGIN
     );
-    document.addEventListener("keydown", this.#escapeKeyDownHandler);
+    document.addEventListener('keydown', this.#escapeKeyDownHandler);
   }
 
   #generateDefaultTripEvent() {

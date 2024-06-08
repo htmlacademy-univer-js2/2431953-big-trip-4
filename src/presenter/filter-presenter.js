@@ -1,13 +1,13 @@
-import FiltersView from "../view/filters-view.js";
-import TripInfoView from "../view/trip-info-view.js";
+import FiltersView from '../view/filters-view.js';
+import TripInfoView from '../view/trip-info-view.js';
 import {
   render,
   replace,
   remove,
   RenderPosition,
-} from "../framework/render.js";
-import { sortPoints, filter } from "../utils.js";
-import { UpdateType, SortType } from "../const.js";
+} from '../framework/render.js';
+import { sortPoints, filter } from '../utils.js';
+import { UpdateType, SortType } from '../const.js';
 
 export default class FilterPresenter {
   #filterComponent = null;

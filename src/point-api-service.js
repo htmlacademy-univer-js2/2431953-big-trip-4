@@ -1,17 +1,17 @@
-import ApiService from "./framework/api-service.js";
-import { Method } from "./const.js";
+import ApiService from './framework/api-service.js';
+import { Method } from './const.js';
 
 export default class PointApiService extends ApiService {
   get points() {
-    return this._load({ url: "points" }).then(ApiService.parseResponse);
+    return this._load({ url: 'points' }).then(ApiService.parseResponse);
   }
 
   get offersByType() {
-    return this._load({ url: "offers" }).then(ApiService.parseResponse);
+    return this._load({ url: 'offers' }).then(ApiService.parseResponse);
   }
 
   get destinations() {
-    return this._load({ url: "destinations" }).then(ApiService.parseResponse);
+    return this._load({ url: 'destinations' }).then(ApiService.parseResponse);
   }
 
   async updatePoint(tripEvent) {
@@ -19,7 +19,7 @@ export default class PointApiService extends ApiService {
       url: `points/${tripEvent.id}`,
       method: Method.PUT,
       body: JSON.stringify(this.#adaptToServer(tripEvent)),
-      headers: new Headers({ "Content-Type": "application/json" }),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
     });
 
     const parsedResponce = await ApiService.parseResponse(response);
@@ -29,10 +29,10 @@ export default class PointApiService extends ApiService {
   #adaptToServer(tripEvent) {
     const adaptedTripEvent = {
       ...tripEvent,
-      base_price: tripEvent.basePrice,
-      date_from: tripEvent.dateFrom,
-      date_to: tripEvent.dateTo,
-      is_favorite: tripEvent.isFavorite,
+      base_Price: tripEvent.basePrice,
+      date_From: tripEvent.dateFrom,
+      date_To: tripEvent.dateTo,
+      is_Favorite: tripEvent.isFavorite,
     };
 
     delete adaptedTripEvent.basePrice;

@@ -1,51 +1,51 @@
 const POINT_TYPES = [
-  "taxi",
-  "bus",
-  "train",
-  "ship",
-  "drive",
-  "flight",
-  "check-in",
-  "sightseeing",
-  "restaurant",
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant',
 ];
 
 const FilterType = {
-  EVERYTHING: "everything",
-  FUTURE: "future",
-  PRESENT: "present",
-  PAST: "past",
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
 };
 
 const SortType = {
-  DAY: "day",
-  EVENT: "event",
-  TIME: "time",
-  PRICE: "price",
-  OFFER: "offer",
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer',
 };
 
 const Mode = {
-  DEFAULT: "DEFAULT",
-  EDITING: "EDITING",
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
 };
 
 const UserAction = {
-  ADD_POINT: "ADD_POINT",
-  UPDATE_POINT: "UPDATE_POINT",
-  DELETE_POINT: "DELETE_POINT",
+  ADD_POINT: 'ADD_POINT',
+  UPDATE_POINT: 'UPDATE_POINT',
+  DELETE_POINT: 'DELETE_POINT',
 };
 
 const UpdateType = {
-  PATCH: "PATCH",
-  MINOR: "MINOR",
-  MAJOR: "MAJOR",
-  INIT: "INIT",
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const Method = {
-  GET: "GET",
-  PUT: "PUT",
+  GET: 'GET',
+  PUT: 'PUT',
 };
 
 export {
