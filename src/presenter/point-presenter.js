@@ -9,6 +9,7 @@ export default class PointPresenter {
   #pointEditorComponent = null;
   #point = null;
   #onPointChange = null;
+  #onPointDelete = null;
   #onEditorOpen = null;
   #destinationsModel = null;
   #offersModel = null;
@@ -19,12 +20,14 @@ export default class PointPresenter {
     destinationsModel,
     offersModel,
     onPointChange,
+    onPointDelete,
     onEditorOpen,
   }) {
     this.#container = container;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#onPointChange = onPointChange;
+    this.#onPointDelete = onPointDelete;
     this.#onEditorOpen = onEditorOpen;
   }
 
@@ -87,6 +90,7 @@ export default class PointPresenter {
       destinations: this.#destinationsModel.get(),
       offers: this.#offersModel.get(),
       onCloseClick: this.#pointCloseHandler,
+      onDeleteClick: this.#pointDeleteHandler,
       onSubmitForm: this.#pointSubmitHandler,
     });
   }
@@ -122,6 +126,10 @@ export default class PointPresenter {
 
   #pointCloseHandler = () => {
     this.#replaceEditorByPoint();
+  };
+
+  #pointDeleteHandler = (point) => {
+    this.#onPointDelete(point);
   };
 
   #pointFavoriteToggleHandler = (isFavorite) => {

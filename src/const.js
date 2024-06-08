@@ -37,9 +37,28 @@ const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odit ad eaque cupiditate praesentium maxime.',
 ];
 
+const DEFAULT_EVENT_TYPE = 'flight';
+
+const POINT_DUMMY = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: null,
+  isFavorite: false,
+  offers: [],
+  type: DEFAULT_EVENT_TYPE,
+};
+
+const REQUIRED_POINT_FIELDS = ['dateFrom', 'dateTo', 'destination', 'type'];
+
 const PointMode = {
   IDLE: 'IDLE',
   EDITABLE: 'EDITABLE',
+};
+
+const EditType = {
+  EDITING: 'EDITING',
+  CREATING: 'CREATING',
 };
 
 const FilterType = {
@@ -101,6 +120,7 @@ const DateFormat = {
   SHORT: 'MMM DD',
   FULL: 'YYYY-MM-DDTHH:mm',
   WITH_DELIMITER: 'DD/MM/YY HH:mm',
+  WITH_DELIMITER_FLAT_PICKER: 'd/m/y H:i',
 };
 
 const DurationFormat = {
@@ -119,6 +139,13 @@ const MocksMaxCount = {
   POINTS: 5,
 };
 
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
+};
+
 export {
   POINTS_COUNT,
   EVENT_TYPES,
@@ -127,7 +154,10 @@ export {
   CITIES,
   DESCRIPTIONS,
   SORTING_COLUMNS,
+  POINT_DUMMY,
+  REQUIRED_POINT_FIELDS,
   PointMode,
+  EditType,
   FilterType,
   FilterSettings,
   SortType,
@@ -137,4 +167,5 @@ export {
   MocksMaxCount,
   MSEC_IN_HOUR,
   MSEC_IN_DAY,
+  UpdateType,
 };

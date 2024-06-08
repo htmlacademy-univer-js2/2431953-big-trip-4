@@ -87,6 +87,7 @@ const sortByType = {
 };
 
 const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+const deleteItem = (items, del) => items.map((item) => item.id !== del.id);
 
 export {
   getRandomArrayElement,
@@ -99,4 +100,5 @@ export {
   filterByType,
   sortByType,
   updateItem,
+  deleteItem,
 };

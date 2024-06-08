@@ -43,7 +43,7 @@ function createPointTemplate(eventPoint, typeOffers, destination) {
           <p class="event__time">
             <time class="event__start-time" datetime="${dateFrom}">${formatDate(dateFrom, DateFormat.TIME)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${dateTo}">${formatDate(dateFrom, DateFormat.TIME)}</time>
+            <time class="event__end-time" datetime="${dateTo}">${formatDate(dateTo, DateFormat.TIME)}</time>
           </p>
           <p class="event__duration">${duration}</p>
         </div>

@@ -6,7 +6,7 @@ import EventsListView from '../view/events-list-view.js';
 import EventsListEmptyView from '../view/events-list-empty-view.js';
 import { SORTING_COLUMNS, SortType } from '../const.js';
 import PointPresenter from './point-presenter.js';
-import { sortByType, updateItem } from '../utils.js';
+import { deleteItem, sortByType, updateItem } from '../utils.js';
 import SortingView from '../view/sorting-view.js';
 
 export default class RoutePresenter {
@@ -24,13 +24,15 @@ export default class RoutePresenter {
     container,
     pointsModel,
     offersModel,
-    destinationsModel
+    destinationsModel,
   }) {
     this.#container = container;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#points = sortByType[this.#currentSortType]([...this.#pointsModel.get()]);
+
+    this.#pointsModel.addObserver(this.#modelEventHandler);
   }
 
   init() {
@@ -64,6 +66,7 @@ export default class RoutePresenter {
 
   #renderRoute() {
     render(this.#listComponent, this.#container);
+    this.#points = sortByType[this.#currentSortType]([...this.#pointsModel.get()]);
 
     this.#points.forEach((point) => {
       this.#renderPoint(point);
@@ -81,6 +84,7 @@ export default class RoutePresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onPointChange: this.#pointChangeHandler,
+      onPointDelete: this.#pointDeleteHandler,
       onEditorOpen: this.#pointEditHandler,
     });
 
@@ -97,10 +101,20 @@ export default class RoutePresenter {
     this.#pointsPresenters.get(updatedPoint.id).update(updatedPoint);
   };
 
+  #pointDeleteHandler = (deletedPoint) => {
+    this.#points = deleteItem(this.#points, deletedPoint);
+    this.#pointsPresenters.get(deletedPoint.id).destroy();
+  };
+
   #sortChangeHandler = (sortType) => {
     this.#currentSortType = sortType;
 
     this.#points = sortByType[this.#currentSortType](this.#points);
+    this.#clearRoute();
+    this.#renderRoute();
+  };
+
+  #modelEventHandler = () => {
     this.#clearRoute();
     this.#renderRoute();
   };
