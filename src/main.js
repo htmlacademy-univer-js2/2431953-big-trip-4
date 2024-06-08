@@ -1,41 +1,32 @@
-import PointsModel from './model/points-model.js';
-import OffersModel from './model/offers-model.js';
-import DestinationsModel from './model/destinations-model.js';
-import RoutePresenter from './presenter/route-presenter.js';
-import FiltersPresenter from './presenter/filters-presenter.js';
-import TripInfoPresenter from './presenter/trip-info-presenter.js';
-import MockService from './service/mock-service.js';
-import CreatePointPresenter from './presenter/create-point-presenter.js';
+import Presenter from './presenter/presenter.js';
+import PointModel from './model/point-model.js';
+import OfferModel from './model/offer-model.js';
+import TownModel from './model/town-model.js';
+import FilterModel from './model/filter-model.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 
-const mockService = new MockService();
-const pointsModel = new PointsModel(mockService);
-const offersModel = new OffersModel(mockService);
-const destinationsModel = new DestinationsModel(mockService);
 
-const pointsContainer = document.querySelector('.trip-events');
 const filtersContainer = document.querySelector('.trip-controls__filters');
+const tripContainer = document.querySelector('.trip-events');
 const tripMainContainer = document.querySelector('.trip-main');
+const newEventButton = tripMainContainer.querySelector('.trip-main__event-add-btn');
+const offerByTypeModel = new OfferModel();
+const destinationModel = new TownModel();
+const tripEventModel = new PointModel(offerByTypeModel.offers, destinationModel.towns);
+const filterModel = new FilterModel();
+const tripEventsPresenter = new Presenter(tripContainer, tripEventModel, offerByTypeModel, destinationModel, filterModel);
+const filterPresenter = new FilterPresenter(filtersContainer, tripMainContainer, filterModel, tripEventModel, offerByTypeModel);
 
-const createPointPresenter = new CreatePointPresenter({
-  container: tripMainContainer,
-  editorContainer: pointsContainer,
-  pointsModel,
-  offersModel,
-  destinationsModel,
-});
+const onAddFormClose = () => {
+  newEventButton.disabled = false;
+};
 
-const routePresenter = new RoutePresenter({
-  container: pointsContainer,
-  createPointBtnContainer: tripMainContainer,
-  pointsModel,
-  offersModel,
-  destinationsModel
-});
+const onNewEventButtonClick = () => {
+  tripEventsPresenter.createTripEvent(onAddFormClose);
+  newEventButton.disabled = true;
+};
 
-const filtersPresenter = new FiltersPresenter({ container: filtersContainer, pointsModel });
-const tripInfoPresenter = new TripInfoPresenter(tripMainContainer);
+newEventButton.addEventListener('click', onNewEventButtonClick);
 
-createPointPresenter.init();
-routePresenter.init();
-filtersPresenter.init();
-tripInfoPresenter.init();
+filterPresenter.init();
+tripEventsPresenter.init();
