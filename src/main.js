@@ -22,11 +22,11 @@ const presenter = new BoardPresenter(pointsComponent, pointModel,
   offerByTypeModel, destinationModel, filterModel);
 const filterPresenter = new FilterPresenter(filterContainer, tripMainContainer, filterModel,
   pointModel, offerByTypeModel, destinationModel);
-const onAddFormClose = () => {
+const addFormCloseHandler = () => {
   newPointButton.disabled = false;
 };
-const onNewEventButtonClick = () => {
-  presenter.createPoint(onAddFormClose);
+const newEventButtonClickHandler = () => {
+  presenter.createPoint(addFormCloseHandler);
   newPointButton.disabled = true;
 };
 filterPresenter.init();
@@ -35,7 +35,7 @@ offerByTypeModel.init().finally(() => {
   destinationModel.init().finally(() => {
     pointModel.init().finally(() => {
       if(offerByTypeModel.offersByType.length && destinationModel.destinations.length) {
-        newPointButton.addEventListener('click', onNewEventButtonClick);
+        newPointButton.addEventListener('click', newEventButtonClickHandler);
       }
     });
   });

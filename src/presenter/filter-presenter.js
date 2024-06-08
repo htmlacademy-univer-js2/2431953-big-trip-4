@@ -25,6 +25,17 @@ export default class FilterPresenter {
     this.#pointModel.addObserver(this.#modelDataChangeHandler);
   }
 
+  get filters() {
+    return Array.from(Object.entries(filter), ([filterType, filterEvents]) => ({
+      type: filterType,
+      count: filterEvents(this.#pointModel.points).length,
+    }));
+  }
+
+  get points() {
+    return sortPoints[SortType.DAY](this.#pointModel.points);
+  }
+
   init() {
     const previousFilterComponent = this.#filterComponent;
     this.#filterComponent = new FiltersView(this.filters, this.#filterModel.filterType);
@@ -36,17 +47,6 @@ export default class FilterPresenter {
     }
     replace(this.#filterComponent, previousFilterComponent);
     remove(previousFilterComponent);
-  }
-
-  get filters() {
-    return Array.from(Object.entries(filter), ([filterType, filterEvents]) => ({
-      type: filterType,
-      count: filterEvents(this.#pointModel.points).length,
-    }));
-  }
-
-  get points() {
-    return sortPoints[SortType.DAY](this.#pointModel.points);
   }
 
   #renderTripInfo() {
