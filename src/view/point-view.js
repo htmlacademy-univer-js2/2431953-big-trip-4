@@ -2,14 +2,11 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { Mode } from '../const.js';
 import { humanizeEventTime, getTimeDifference } from '../utils.js';
 
-const createTripEventTemplate = (point, offersByType, destination) => {
+const createPointTemplate = (point, offersByCurrentType, destination) => {
   const {basePrice, dateFrom, dateTo, isFavorite, offers, type} = point;
-
   const isFavoriteButtonClass = isFavorite ? 'event__favorite-btn--active' : '';
-
   const timeDifference = getTimeDifference(dateFrom, dateTo);
-
-  const eventOffersByType = offersByType.length && offers.length ? offersByType.map(
+  const pointOffersByType = offersByCurrentType.length && offers.length ? offersByCurrentType.map(
     (offer) => !offers.includes(offer.id) ? '' : (
       `<li class="event__offer">
         <span class="event__offer-title">${offer.title}</span>
@@ -17,9 +14,7 @@ const createTripEventTemplate = (point, offersByType, destination) => {
         <span class="event__offer-price">${offer.price}</span>
       </li>`
     )).join('') : '';
-
-  return (
-    `<li class="trip-events__item">
+  return `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="${humanizeEventTime(dateFrom, 'YYYY-MM-DD')}">${humanizeEventTime(dateFrom, 'MMM D')}</time>
         <div class="event__type">
@@ -39,7 +34,7 @@ const createTripEventTemplate = (point, offersByType, destination) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${eventOffersByType}
+          ${pointOffersByType}
         </ul>
         <button class="event__favorite-btn ${isFavoriteButtonClass}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -51,15 +46,16 @@ const createTripEventTemplate = (point, offersByType, destination) => {
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
-    </li>`);
+    </li>`;
 };
 
-export default class TripPointView extends AbstractView{
+
+export default class PointView extends AbstractView{
   #point = null;
   #destination = null;
   #offers = null;
 
-  constructor (point, destination, offers) {
+  constructor (point, offers, destination) {
     super();
     this.#point = point;
     this.#destination = destination;
@@ -68,25 +64,25 @@ export default class TripPointView extends AbstractView{
   }
 
   get template() {
-    return createTripEventTemplate(this.#point, this.#offers, this.#destination);
+    return createPointTemplate(this.#point, this.#offers, this.#destination);
   }
 
   setFormOpenClickHandler(callback) {
     this._callback.formOpenClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onFormOpenClick);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formOpenClickHandler);
   }
 
   setFavoriteButtonHandler(callback) {
     this._callback.favoriteClick = callback;
-    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onFavoriteButtonClick);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteButtonClickHandler);
   }
 
-  #onFormOpenClick = (evt) => {
+  #formOpenClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.formOpenClick();
   };
 
-  #onFavoriteButtonClick = (evt) => {
+  #favoriteButtonClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick();
   };
