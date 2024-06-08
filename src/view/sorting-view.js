@@ -6,12 +6,10 @@ const createSortingTemplate = (currentSortType) => (
     ${Object.values(SortType).map((sortType) => {
     const isDisabled = sortType === SortType.EVENT || sortType === SortType.OFFER ? 'disabled' : '';
     const isChecked = sortType === currentSortType ? 'checked' : '';
-
-    return (
-      `<div class="trip-sort__item  trip-sort__item--${sortType}">
+    return `<div class="trip-sort__item  trip-sort__item--${sortType}">
         <input id="sort-${sortType}" class="trip-sort__input  visually-hidden" data-sort-type="${sortType}" type="radio" name="trip-sort" value="sort-${sortType}" ${isDisabled} ${isChecked}>
         <label class="trip-sort__btn" for="sort-${sortType}">${sortType}</label>
-      </div>`);}).join('')}
+      </div>`;}).join('')}
   </form>`
 );
 
