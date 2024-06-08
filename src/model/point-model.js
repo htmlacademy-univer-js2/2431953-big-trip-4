@@ -25,8 +25,14 @@ export default class PointModel extends Observable{
   }
 
   async addPoint(updateType, newItem) {
-    this.#points = [newItem, ...this.#points];
-    this._notify(updateType, newItem);
+    try {
+      const response = await this.#pointApiService.createPoint(newItem);
+      const newPoint = this.#adaptToClient(response);
+      this.#points = [newPoint, ...this.#points];
+      this._notify(updateType, newItem);
+    } catch(err) {
+      throw new Error('Can\'t add trip event');
+    }
   }
 
   async updatePoint(updateType, updatedItem) {
@@ -49,8 +55,13 @@ export default class PointModel extends Observable{
     if(updatedItemIndex === -1) {
       throw new Error('Can\'t delete unexisting trip event');
     }
-    this.#points = [...this.#points.slice(0, updatedItemIndex), ...this.#points.slice(updatedItemIndex + 1)];
-    this._notify(updateType);
+    try {
+      await this.#pointApiService.deletePoint(deletingItem);
+      this.#points = [...this.#points.slice(0, updatedItemIndex), ...this.#points.slice(updatedItemIndex + 1)];
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete trip event');
+    }
   }
 
   #adaptToClient(point) {

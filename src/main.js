@@ -18,21 +18,10 @@ const offerByTypeModel = new OfferModel(pointApiService);
 const destinationModel = new DestinationModel(pointApiService);
 const pointModel = new PointModel(pointApiService);
 const filterModel = new FilterModel();
-const presenter = new BoardPresenter(
-  pointsComponent,
-  pointModel,
-  offerByTypeModel,
-  destinationModel,
-  filterModel
-);
-const filterPresenter = new FilterPresenter(
-  filterContainer,
-  tripMainContainer,
-  filterModel,
-  pointModel,
-  offerByTypeModel,
-  destinationModel
-);
+const presenter = new BoardPresenter(pointsComponent, pointModel,
+  offerByTypeModel, destinationModel, filterModel);
+const filterPresenter = new FilterPresenter(filterContainer, tripMainContainer, filterModel,
+  pointModel, offerByTypeModel, destinationModel);
 const onAddFormClose = () => {
   newPointButton.disabled = false;
 };
@@ -45,10 +34,7 @@ presenter.init();
 offerByTypeModel.init().finally(() => {
   destinationModel.init().finally(() => {
     pointModel.init().finally(() => {
-      if (
-        offerByTypeModel.offersByType.length &&
-        destinationModel.destinations.length
-      ) {
+      if(offerByTypeModel.offersByType.length && destinationModel.destinations.length) {
         newPointButton.addEventListener('click', onNewEventButtonClick);
       }
     });
