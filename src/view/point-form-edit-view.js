@@ -216,7 +216,7 @@ export default class PointFormEditView extends AbstractStatefulView {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.dateFrom,
-        minDate: dayjs().toString(),
+        minDate: 0,
         minuteIncrement: 1,
         onChange: this.#dateFromChangeHandler,
       });
