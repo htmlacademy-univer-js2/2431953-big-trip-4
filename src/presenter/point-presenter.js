@@ -12,7 +12,7 @@ export default class PointPresenter {
   #editFormComponent = null;
   #offersByType = null;
   #destinations = null;
-  #detinationNames = null;
+  #destinationNames = null;
   #changeData = null;
   #changePointMode = null;
 
@@ -20,7 +20,7 @@ export default class PointPresenter {
     this.#pointsListContainer = pointsListContainer;
     this.#offersByType = offersByType;
     this.#destinations = destinations;
-    this.#detinationNames = destinationNames;
+    this.#destinationNames = destinationNames;
     this.#changeData = changeData;
     this.#changePointMode = changePointMode;
   }
@@ -101,7 +101,7 @@ export default class PointPresenter {
   }
 
   #renderEditFormComponent() {
-    this.#editFormComponent = new PointFormEditView(this.#offersByType, this.#destinations, this.#detinationNames, this.#point);
+    this.#editFormComponent = new PointFormEditView(this.#offersByType, this.#destinations, this.#destinationNames, this.#point);
     this.#editFormComponent.setFormSubmitHandler(this.#formSubmitHandler);
     this.#editFormComponent.setFormCloseClickHandler(this.#formCloseButtonClickHandler);
     this.#editFormComponent.setFormDeleteHandler(this.#deleteButtonClickHandler);

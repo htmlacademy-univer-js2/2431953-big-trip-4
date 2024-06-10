@@ -22,8 +22,8 @@ export default class PointApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'})
     });
 
-    const parsedResponce = await ApiService.parseResponse(response);
-    return parsedResponce;
+    const parsedResponse = await ApiService.parseResponse(response);
+    return parsedResponse;
   }
 
   async createPoint(tripEvent) {
@@ -34,8 +34,8 @@ export default class PointApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'})
     });
 
-    const parsedResponce = await ApiService.parseResponse(response);
-    return parsedResponce;
+    const parsedResponse = await ApiService.parseResponse(response);
+    return parsedResponse;
   }
 
   async deletePoint(tripEvent) {
