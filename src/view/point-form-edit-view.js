@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { POINT_TYPES } from '../const.js';
 import { humanizeEventTime, isPast } from '../utils.js';
